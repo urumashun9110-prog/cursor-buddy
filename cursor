@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Living Cursor Buddy</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background: radial-gradient(circle at center, #111, #000);
+    overflow: hidden;
+    cursor: crosshair;
+  }
+
+  #buddy {
+    width: 60px;
+    height: 60px;
+    background: #00ffcc;
+    border-radius: 50%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    user-select: none;
+    transition: background 0.2s;
+  }
+
+  #eye {
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<div id="buddy">
+  <div id="eye">👁️</div>
+</div>
+
+<script>
+  const buddy = document.getElementById("buddy");
+
+  let x = window.innerWidth / 2;
+  let y = window.innerHeight / 2;
+  let targetX = x;
+  let targetY = y;
+
+  const speed = 0.08;
+  const step = 20;
+
+  // Cursor sensing
+  document.addEventListener("mousemove", (e) => {
+    targetX = e.clientX;
+    targetY = e.clientY;
+  });
+
+  // Arrow key movement
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowUp") y -= step;
+    if (e.key === "ArrowDown") y += step;
+    if (e.key === "ArrowLeft") x -= step;
+    if (e.key === "ArrowRight") x += step;
+  });
+
+  function animate() {
+    x += (targetX - x) * speed;
+    y += (targetY - y) * speed;
+
+    buddy.style.left = x + "px";
+    buddy.style.top = y + "px";
+
+    const dx = Math.abs(targetX - x);
+    const dy = Math.abs(targetY - y);
+
+    // Emotion change
+    if (dx < 40 && dy < 40) {
+      buddy.style.background = "#ff0066";
+      buddy.innerHTML = "🫣";
+    } else {
+      buddy.style.background = "#00ffcc";
+      buddy.innerHTML = "😡";
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+</script>
+
+</body>
+</html>
